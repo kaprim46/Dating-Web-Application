@@ -1,0 +1,16 @@
+<h4>Internal server error - refreshing the page will make error disappear</h4>
+<ng-container *ngIf="error">
+   <h5 class="text-info">Error status Code : {{error.statusCode}}</h5>
+   <h5 class="text-danger" >Error: {{error.message}}</h5>
+   <p class="font-weight-bold">Note: If you are seeing this then sngulsr is probably not to blame</p>
+   <p>What to do next?</p>
+   <ol>
+    <li>Open chrome dev tools! Then check the failing request in the network tab</li>
+    <li>Exmaine the request URL - what API endpoint are you requeating?</li>
+    <li>Reproduce the problem in postman - if we get same error in angular is 100% is not the problem</li>
+   </ol>
+   <p style="font-weight: bold;">Following is the stack trace - the first few lines will tell you what line of code caused the issue in the API</p>
+   <code class="mt-5" style="background-color: whitesmoke;">
+      {{error.details}}
+   </code>
+</ng-container>
