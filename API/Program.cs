@@ -1,18 +1,16 @@
-using Microsoft.EntityFrameworkCore;
+using API.Data;
 using API.Entities;
 using API.Extensions;
 using API.Middleware;
 using API.SignalR;
 using Microsoft.AspNetCore.Identity;
-using API.Data;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Configure logging
-builder.Logging.ClearProviders(); // Clear any previously registered logging providers
-builder.Logging.AddConsole(); // Add console logging provider
-
 // Add services to the container.
+
 builder.Services.AddControllers();
 builder.Services.AddApplicationService(builder.Configuration);
 builder.Services.AddIdentityService(builder.Configuration);
@@ -33,13 +31,20 @@ else
   var pgHost = pgHostPort.Split(":")[0];
   var pgPort = pgHostPort.Split(":")[1];
 
-  connString = $"Server={pgHost};Port={pgPort};User Id={pgUser};Password={pgPass};Database={pgDb};SSL Mode=Require;";
+  connString = $"Server={pgHost};Port={pgPort};User Id={pgUser};Password={pgPass};Database={pgDb};";
 }
 
 builder.Services.AddDbContext<AppDbContext>(opt => 
 {
-   opt.UseNpgsql(connString);
+    opt.UseNpgsql(connString, options =>
+    {
+        options.RemoteCertificateValidationCallback((sender, certificate, chain, sslPolicyErrors) => true);
+    });
 });
+
+builder.Logging.AddConsole();
+builder.Logging.AddDebug();
+builder.Logging.SetMinimumLevel(LogLevel.Debug);
 
 var app = builder.Build();
 
@@ -76,7 +81,7 @@ try
 }
 catch (Exception ex)
 {
-    var logger = app.Services.GetRequiredService<ILogger<Program>>();
+    var logger = services.GetService<ILogger<Program>>();
     logger.LogError(ex, "An error occured during migration");
 }
 
