@@ -1,4 +1,4 @@
-# fly.toml app configuration file generated for datingapp2 on 2024-04-12T16:25:16Z
+# fly.toml app configuration file generated for datingapp2 on 2024-04-12T13:33:28Z
 #
 # See https://fly.io/docs/reference/configuration/ for information about how to use this file.
 #
@@ -6,34 +6,31 @@
 app = 'datingapp2'
 primary_region = 'mad'
 
-[experimental]
-  allowed_public_ports = []
-  auto_rollback = true
-
 [build]
   image = 'kaprim/datingapp:latest'
 
 [env]
-  ASPNETCORE_URLS = 'http://+:8080'
-  CloudinarySettings__ApiKey = '988952821186855'
-  CloudinarySettings__CloudName = 'djkulxmzt'
+  ASPNETCORE_URLS='http://+:8080'
+  CloudinarySettings__CloudName='djkulxmzt'
+  CloudinarySettings__ApiKey='988952821186855'
+ 
+[experimental]
+  allowed_public_ports = []
+  auto_rollback = true
 
 [[services]]
-  protocol = 'tcp'
+  http-checks = []
   internal_port = 8080
   processes = ['app']
-
-[[services.ports]]
-    port = 80
-    handlers = ['http']
-    force_https = true
-
-  [services.concurrency]
-    type = 'connections'
+  protocol = 'tcp'
+  script_checks = []
+   [services.concurrency]
     hard_limit = 25
     soft_limit = 20
+    type = "connections"
 
-[[vm]]
-  memory = '1gb'
-  cpu_kind = 'shared'
-  cpus = 1
+
+[[services.ports]]
+  force_https = true
+  handlers = ['http']
+  port = 80

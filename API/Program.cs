@@ -1,15 +1,18 @@
-using API.Data;
+using Microsoft.EntityFrameworkCore;
 using API.Entities;
 using API.Extensions;
 using API.Middleware;
 using API.SignalR;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
+using API.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
+// Configure logging
+builder.Logging.ClearProviders(); // Clear any previously registered logging providers
+builder.Logging.AddConsole(); // Add console logging provider
 
+// Add services to the container.
 builder.Services.AddControllers();
 builder.Services.AddApplicationService(builder.Configuration);
 builder.Services.AddIdentityService(builder.Configuration);
@@ -73,7 +76,7 @@ try
 }
 catch (Exception ex)
 {
-    var logger = services.GetService<ILogger<Program>>();
+    var logger = app.Services.GetRequiredService<ILogger<Program>>();
     logger.LogError(ex, "An error occured during migration");
 }
 
