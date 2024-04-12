@@ -5,7 +5,6 @@ using API.Middleware;
 using API.SignalR;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -36,15 +35,8 @@ else
 
 builder.Services.AddDbContext<AppDbContext>(opt => 
 {
-    opt.UseNpgsql(connString, options =>
-    {
-        options.RemoteCertificateValidationCallback((sender, certificate, chain, sslPolicyErrors) => true);
-    });
+   opt.UseNpgsql(connString);
 });
-
-builder.Logging.AddConsole();
-builder.Logging.AddDebug();
-builder.Logging.SetMinimumLevel(LogLevel.Debug);
 
 var app = builder.Build();
 
